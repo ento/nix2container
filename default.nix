@@ -353,6 +353,9 @@ let
     # An attribute set describing an image configuration as defined in
     # https://github.com/opencontainers/image-spec/blob/8b9d41f48198a7d6d0a5c1a12dc2d1f7f47fc97f/specs-go/v1/config.go#L23
     config ? {},
+    # Store the layer tar in the derivation. This is useful when the
+    # layer dependencies are not bit reproducible.
+    reproducible ? true,
     # A list of layers built with the buildLayer function: if a store
     # path in deps or copyToRoot belongs to one of these layers, this
     # store path is skipped. This is pretty useful to
@@ -438,6 +441,7 @@ let
         deps = [configFile];
         ignore = configFile;
         layers = layers;
+        reproducible = reproducible;
       };
       fromImageFlag = l.optionalString (fromImage != "") "--from-image ${fromImage}";
       layerPaths = l.concatMapStringsSep " " (l: l + "/layers.json") (layers ++ [customizationLayer]);
