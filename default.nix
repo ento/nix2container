@@ -31,7 +31,7 @@ let
     preBuild = let
       patch = pkgs.fetchurl {
         url = "https://github.com/nlewo/image/commit/c2254c998433cf02af60bf0292042bd80b96a77e.patch";
-        sha256 = "sha256-dKEObfZY2fdsza/kObCLhv4l2snuzAbpDi4fGmtTPUQ=";
+        sha256 = "sha256-1Tj9D+ePjGL5u04aT7zr5rJw4vHAVrXAsr4owdooC/Y=";
 
       };
     in ''
@@ -407,6 +407,8 @@ let
     # controlled using nixUid/nixGid.
     nixUid ? 0,
     nixGid ? 0,
+    # Time of creation of the image.
+    created ? "0001-01-01T00:00:00Z",
     # Deprecated: will be removed
     contents ? null,
     meta ? {},
@@ -462,6 +464,7 @@ let
         trace = verifyTrace;
       };
       fromImageFlag = l.optionalString (fromImage != "") "--from-image ${fromImage}";
+      createdFlag = "--created ${created}";
       layerPaths = l.concatMapStringsSep " " (l: l + "/layers.json") (layers ++ [customizationLayer]);
       tracePaths = l.optionalString verifyTrace (l.concatMapStringsSep " " (l: "--traces " + l + "/trace") (layers ++ [customizationLayer]));
       traceOutput = l.optionalString verifyTrace "--trace-output $out/trace";
@@ -495,6 +498,7 @@ let
         ${nix2container-bin}/bin/nix2container image \
         $out/image.json \
         ${fromImageFlag} \
+        ${createdFlag} \
         ${configFile} \
         ${layerPaths} \
         ${tracePaths} \

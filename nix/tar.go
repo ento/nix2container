@@ -135,6 +135,9 @@ func createDirectory(tw Tarer, path string) error {
 		ChangeTime: epoch,
 		Mode:       0755,
 	}
+
+	hdr.ModTime = time.Date(1970, 01, 01, 0, 0, 1, 0, time.UTC)
+
 	if err := tw.WriteHeader(hdr); err != nil {
 		return fmt.Errorf("Could not write hdr '%#v', got error '%s'", hdr, err.Error())
 	}
@@ -194,7 +197,7 @@ func appendFileToTar(t Tarer, srcPath, dstPath string, info os.FileInfo, opts *t
 		}
 	}
 
-	hdr.ModTime = time.Date(1970, 01, 01, 0, 0, 0, 0, time.UTC)
+	hdr.ModTime = time.Date(1970, 01, 01, 0, 0, 1, 0, time.UTC)
 	hdr.AccessTime = time.Date(1970, 01, 01, 0, 0, 0, 0, time.UTC)
 	hdr.ChangeTime = time.Date(1970, 01, 01, 0, 0, 0, 0, time.UTC)
 
