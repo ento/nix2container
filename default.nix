@@ -288,6 +288,7 @@ let
     traceFilename = l.optionalString trace "--trace-filename $out/trace";
     layersJSON = pkgs.runCommand "layers.json" {} ''
       mkdir $out
+      set -x
       ${nix2container-bin}/bin/nix2container ${subcommand} \
         $out/layers.json \
         ${closureGraph allDeps ignore} \
@@ -495,6 +496,7 @@ let
       }
         ''
         mkdir $out
+        set -x
         ${nix2container-bin}/bin/nix2container image \
         $out/image.json \
         ${fromImageFlag} \
